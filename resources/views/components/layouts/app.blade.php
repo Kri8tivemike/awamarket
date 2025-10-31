@@ -30,9 +30,9 @@
             <div class="flex items-center justify-between h-16">
                 <!-- Logo Section -->
                 <div class="flex items-center">
-                    <a href="/" class="flex items-center space-x-2 group">
+                    <a href="/" class="flex items-center space-x-2 group focus:outline-none focus:ring-0 select-none" style="-webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
                         <!-- Logo Image -->
-                        <img src="/images/logo.png" alt="AwaMarket Logo" class="h-10 w-auto transition-all duration-200 hover:scale-105">
+                        <img src="/images/logo.png" alt="AwaMarket Logo" class="h-10 w-auto transition-all duration-200 hover:scale-105 select-none" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none;">
                     </a>
                 </div>
 
@@ -431,28 +431,33 @@
             }
         }
 
+        // Global function to update cart badges
+        window.updateCartBadges = function(count) {
+            const cartBadge = document.getElementById('cart-count-badge');
+            const mobileCartBadge = document.getElementById('mobile-cart-badge');
+            
+            if (cartBadge) {
+                cartBadge.textContent = count;
+            }
+            if (mobileCartBadge) {
+                mobileCartBadge.textContent = count;
+                // Show/hide badge based on count
+                if (count === 0) {
+                    mobileCartBadge.style.display = 'none';
+                } else {
+                    mobileCartBadge.style.display = 'flex';
+                }
+            }
+        };
+
         // Load cart count and WhatsApp settings on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Load cart count
             fetch('{{ url('') }}/api/cart')
                 .then(response => response.json())
                 .then(data => {
-                    const cartBadge = document.getElementById('cart-count-badge');
-                    const mobileCartBadge = document.getElementById('mobile-cart-badge');
                     const count = data.count || 0;
-                    
-                    if (cartBadge) {
-                        cartBadge.textContent = count;
-                    }
-                    if (mobileCartBadge) {
-                        mobileCartBadge.textContent = count;
-                        // Hide badge if count is 0
-                        if (count === 0) {
-                            mobileCartBadge.style.display = 'none';
-                        } else {
-                            mobileCartBadge.style.display = 'flex';
-                        }
-                    }
+                    window.updateCartBadges(count);
                 })
                 .catch(error => {
                     console.error('Error loading cart count:', error);

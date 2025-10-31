@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product - Admin Dashboard</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js', 'resources/js/admin.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ Vite::asset('resources/css/admin.css') }}">
 </head>
 <body class="bg-gradient-to-br from-amber-50 to-orange-100 min-h-screen">
     <!-- Navigation -->
@@ -159,10 +158,10 @@
                         <div class="px-6 py-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Regular Price *</label>
+                                    <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Min price *</label>
                                     <div class="relative">
-                                        <span class="absolute left-3 top-2 text-gray-500">$</span>
-                                        <input type="number" id="price" name="price" value="{{ old('price', $product->price) }}" 
+                                        <span class="absolute left-3 top-2 text-gray-500">₦</span>
+                <input type="number" id="price" name="price" value="{{ old('price', $product->price) }}" 
                                                step="0.01" min="0" 
                                                class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('price') border-red-500 @enderror" 
                                                required>
@@ -172,10 +171,10 @@
                                     @enderror
                                 </div>
                                 <div>
-                                    <label for="sale_price" class="block text-sm font-medium text-gray-700 mb-2">Sale Price</label>
+                                    <label for="sale_price" class="block text-sm font-medium text-gray-700 mb-2">Max price</label>
                                     <div class="relative">
-                                        <span class="absolute left-3 top-2 text-gray-500">$</span>
-                                        <input type="number" id="sale_price" name="sale_price" value="{{ old('sale_price', $product->sale_price) }}" 
+                                        <span class="absolute left-3 top-2 text-gray-500">₦</span>
+                <input type="number" id="sale_price" name="sale_price" value="{{ old('sale_price', $product->sale_price) }}" 
                                                step="0.01" min="0" 
                                                class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('sale_price') border-red-500 @enderror">
                                     </div>
@@ -295,7 +294,7 @@
                                                     <input type="text" name="options[{{ $index }}][title]" value="{{ $option['title'] ?? $option['type'] ?? '' }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm" placeholder="e.g., 1kg, 500g, Small">
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Price (₦)</label>
                                                     <input type="number" name="options[{{ $index }}][price]" value="{{ $option['price'] ?? '' }}" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm" placeholder="0.00">
                                                 </div>
                                             </div>
@@ -432,7 +431,7 @@
         </form>
     </div>
 
-    <script src="{{ Vite::asset('resources/js/admin.js') }}"></script>
+    {{-- Admin JS is loaded via @vite directive in the head --}}
     <script>
         // Auto-generate slug from product name
         document.getElementById('name').addEventListener('input', function() {
@@ -464,7 +463,7 @@
                             <input type="text" name="options[${optionIndex}][title]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm" placeholder="e.g., 1kg, 500g, Small">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Price (₦)</label>
                             <input type="number" name="options[${optionIndex}][price]" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm" placeholder="0.00">
                         </div>
                     </div>

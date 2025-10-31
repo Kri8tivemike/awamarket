@@ -1,5 +1,5 @@
 @props([
-    'show' => true,
+    'show' => false,
     'title' => 'Product Options',
     'subtitle' => 'Pick an option',
     'description' => 'Please choose your preferred quantity from the option provided',
@@ -11,7 +11,7 @@
 <div id="{{ $modalId }}" class="modal-backdrop {{ $show ? 'modal-visible' : 'modal-hidden' }}" onclick="closeModal(event)">
     <div class="modal-content bg-white shadow-2xl transform transition-all duration-300 flex flex-col" onclick="event.stopPropagation()">
         <!-- Modal Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white sticky top-0 z-10">
+        <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-white sticky top-0 z-10">
             <h3 class="text-lg font-bold text-gray-900">{{ $title }}</h3>
             <button class="close-modal-btn p-1.5 text-gray-400 hover:text-gray-600 transition-colors duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -21,15 +21,16 @@
         </div>
 
         <!-- Modal Content -->
-        <div class="flex-1 overflow-y-auto px-6 py-5">
+        <div class="flex-1 overflow-y-auto modal-scrollable px-4 sm:px-6 py-3 sm:py-5">
             <div class="mb-5">
                 <h4 class="text-base font-semibold text-gray-900 mb-1">{{ $subtitle }}</h4>
                 <p class="text-sm text-gray-500">{{ $description }}</p>
             </div>
 
-            <!-- Product Options -->
-            <div class="space-y-3">
-                @if(empty($options))
+            <!-- Product Options (Dynamically populated by JavaScript) -->
+            <div class="space-y-2 sm:space-y-3">
+                <!-- Options will be inserted here dynamically by showProductModal() function -->
+                @if(false)
                     <!-- Default options if none provided -->
                     <div class="product-option flex items-center justify-between p-3 bg-white hover:bg-gray-50 border border-gray-200 rounded-lg transition-all duration-200 cursor-pointer">
                         <div class="flex items-center space-x-3">
@@ -161,7 +162,7 @@
         </div>
         
         <!-- Add to Cart Button - Fixed at bottom -->
-        <div class="bg-white border-t border-gray-200 px-6 py-4">
+        <div class="bg-white border-t border-gray-200 px-4 sm:px-6 py-3 sm:py-4">
             <button id="add-to-cart-btn" class="w-full py-3 px-6 bg-gray-200 text-gray-500 rounded-lg font-semibold text-base transition-all duration-200 cursor-not-allowed disabled:opacity-60" disabled>
                 <span class="flex items-center justify-center space-x-2">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -175,95 +176,28 @@
 </div>
 
 <script>
+// Modal close functionality - attached to close button and backdrop
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('{{ $modalId }}');
     if (!modal) return;
     
     const closeBtn = modal.querySelector('.close-modal-btn');
-    const addToCartBtn = modal.querySelector('#add-to-cart-btn');
-    const pickButtons = modal.querySelectorAll('.pick-btn');
-    let selectedOption = null;
-
-    // Close modal functionality
-    closeBtn.addEventListener('click', function() {
-        modal.classList.remove('modal-visible');
-        modal.classList.add('modal-hidden');
-    });
-
-    // Pick button functionality
-    pickButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove previous selection
-            pickButtons.forEach(btn => {
-                btn.classList.remove('bg-orange-500', 'text-white');
-                btn.classList.add('bg-white', 'text-gray-700');
-                btn.textContent = 'Pick';
-            });
-
-            // Mark current selection
-            this.classList.remove('bg-white', 'text-gray-700');
-            this.classList.add('bg-orange-500', 'text-white');
-            this.textContent = 'Pick';
-
-            // Store selected option
-            selectedOption = this.closest('.product-option');
-
-            // Enable add to cart button
-            addToCartBtn.disabled = false;
-            addToCartBtn.classList.remove('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
-            addToCartBtn.classList.add('bg-orange-500', 'text-white', 'hover:bg-orange-600', 'cursor-pointer');
-        });
-    });
-
-    // Add to cart functionality
-    addToCartBtn.addEventListener('click', function() {
-        if (selectedOption) {
-            const productName = selectedOption.querySelector('.product-name').textContent;
-            const productPrice = selectedOption.querySelector('.product-price').textContent;
-            
-            // Show success message
-            alert(`${productName} (${productPrice}) has been added to your cart!`);
-            
-            // Reset modal state
-            pickButtons.forEach(btn => {
-                btn.classList.remove('bg-orange-500', 'text-white');
-                btn.classList.add('bg-white', 'text-gray-700');
-                btn.textContent = 'Pick';
-            });
-            selectedOption = null;
-            addToCartBtn.disabled = true;
-            addToCartBtn.classList.remove('bg-orange-500', 'text-white', 'hover:bg-orange-600', 'cursor-pointer');
-            addToCartBtn.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
-            
-            // Close modal
+    
+    // Close button handler
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
             modal.classList.remove('modal-visible');
             modal.classList.add('modal-hidden');
-        }
-    });
+        });
+    }
 });
 
-// Global function to handle backdrop clicks
+// Global function to handle backdrop clicks (close modal when clicking outside)
 function closeModal(event) {
-    // Only close if clicking on the backdrop (not the modal content)
     if (event.target === event.currentTarget) {
         const modal = event.currentTarget;
-        modal.style.display = 'none';
-        
-        // Reset modal state
-        const pickButtons = modal.querySelectorAll('.pick-btn');
-        const addToCartBtn = modal.querySelector('.add-to-cart-btn');
-        
-        pickButtons.forEach(btn => {
-            btn.classList.remove('bg-orange-500', 'text-white');
-            btn.classList.add('bg-white', 'text-gray-700');
-            btn.textContent = 'Pick';
-        });
-        
-        if (addToCartBtn) {
-            addToCartBtn.disabled = true;
-            addToCartBtn.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
-            addToCartBtn.classList.remove('bg-orange-500', 'text-white', 'hover:bg-orange-600');
-        }
+        modal.classList.remove('modal-visible');
+        modal.classList.add('modal-hidden');
     }
 }
 </script>

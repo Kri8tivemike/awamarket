@@ -391,10 +391,10 @@
                                     <td class="px-2 py-3">
                                         <div class="text-sm font-semibold glass-text-dark">
                                             @if($product->sale_price)
-                                                <span class="line-through text-gray-500">${{ number_format($product->price, 2) }}</span>
-                                                <span class="text-red-600">${{ number_format($product->sale_price, 2) }}</span>
+                                                <span class="line-through text-gray-500">₦{{ number_format($product->price, 2) }}</span>
+                                                <span class="text-red-600">₦{{ number_format($product->sale_price, 2) }}</span>
                                             @else
-                                                ${{ number_format($product->price, 2) }}
+                                                ₦{{ number_format($product->price, 2) }}
                                             @endif
                                         </div>
                                     </td>
@@ -576,11 +576,11 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Price *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Min price *</label>
                             <input type="number" name="price" step="0.01" min="0" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Sale Price</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Max price</label>
                             <input type="number" name="sale_price" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
@@ -699,11 +699,11 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Price *</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Min price *</label>
                             <input type="number" name="price" id="edit_price" step="0.01" min="0" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Sale Price</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Max price</label>
                             <input type="number" name="sale_price" id="edit_sale_price" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
@@ -963,8 +963,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div><strong>Name:</strong> ${product.name}</div>
                             <div><strong>SKU:</strong> ${product.sku}</div>
-                            <div><strong>Price:</strong> $${parseFloat(product.price).toFixed(2)}</div>
-                            <div><strong>Sale Price:</strong> ${product.sale_price ? '$' + parseFloat(product.sale_price).toFixed(2) : 'N/A'}</div>
+                            <div><strong>Price:</strong> ₦${parseFloat(product.price).toFixed(2)}</div>
+                            <div><strong>Sale Price:</strong> ${product.sale_price ? '₦' + parseFloat(product.sale_price).toFixed(2) : 'N/A'}</div>
                             <div><strong>Stock:</strong> ${product.stock_quantity}</div>
                             <div><strong>Category:</strong> ${product.category?.name || 'No Category'}</div>
                             <div><strong>Status:</strong> ${product.status}</div>

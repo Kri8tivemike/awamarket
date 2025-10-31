@@ -247,7 +247,7 @@
                                             @if(isset($option['price']))
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                                                <p class="text-green-600 font-bold bg-white px-3 py-2 rounded border">${{ number_format($option['price'], 2) }}</p>
+                                                <p class="text-green-600 font-bold bg-white px-3 py-2 rounded border">₦{{ number_format($option['price'], 2) }}</p>
                                             </div>
                                             @endif
                                         </div>
@@ -279,22 +279,18 @@
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h2 class="text-lg font-semibold text-amber-900 flex items-center">
                             <i class="fas fa-dollar-sign mr-2"></i>
-                            Pricing
+                            Estimated price
                         </h2>
                     </div>
                     <div class="px-6 py-4 space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Regular Price</label>
-                            <p class="text-2xl font-bold text-gray-900">${{ number_format($product->price, 2) }}</p>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Min price</label>
+                            <p class="text-2xl font-bold text-gray-900">₦{{ number_format($product->price, 2) }}</p>
                         </div>
                         @if($product->sale_price)
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Sale Price</label>
-                            <p class="text-2xl font-bold text-red-600">${{ number_format($product->sale_price, 2) }}</p>
-                            <p class="text-sm text-gray-500">
-                                Save ${{ number_format($product->price - $product->sale_price, 2) }}
-                                ({{ round((($product->price - $product->sale_price) / $product->price) * 100) }}% off)
-                            </p>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Max price</label>
+                            <p class="text-2xl font-bold text-red-600">₦{{ number_format($product->sale_price, 2) }}</p>
                         </div>
                         @endif
                     </div>

@@ -426,9 +426,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Add loading states for buttons
+    // Add loading states for buttons (except logout and form submit buttons)
     document.querySelectorAll('button, .btn').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            // IMPORTANT: Skip logout button explicitly
+            if (this.id === 'logout-button' || this.closest('#logout-form')) {
+                console.log('Logout button clicked - allowing form submission');
+                return; // Let logout happen
+            }
+            
+            // Skip buttons in forms (especially logout)
+            if (this.form) {
+                return; // Let form submission happen naturally
+            }
+            
+            // Skip buttons with data-no-loading attribute
+            if (this.hasAttribute('data-no-loading')) {
+                return;
+            }
+            
+            // Skip if button type is submit
+            if (this.type === 'submit') {
+                return;
+            }
+            
+            // Add loading state for other buttons
             if (!this.disabled && !this.classList.contains('loading')) {
                 this.classList.add('loading');
                 setTimeout(() => {

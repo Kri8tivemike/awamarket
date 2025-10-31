@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/shop-now', [ShopController::class, 'index'])->name('shop.index');
@@ -18,8 +19,13 @@ Route::post('/orders/create', [CartController::class, 'createOrder'])->name('ord
 // API Routes
 Route::get('/api/whatsapp-settings', [HomeController::class, 'getWhatsAppSettings'])->name('api.whatsapp.settings');
 
-// Admin Dashboard Routes
-Route::prefix('admin')->group(function () {
+// Dashboard route that redirects to admin dashboard
+Route::get('/dashboard', function () {
+    return redirect()->route('admin.dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+// Admin Dashboard Routes - Protected by Authentication
+Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
     Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
@@ -54,3 +60,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/whatsapp', [AdminController::class, 'whatsapp'])->name('admin.whatsapp');
     Route::post('/whatsapp', [AdminController::class, 'saveWhatsAppSettings'])->name('admin.whatsapp.save');
 });
+
+// Optional: User profile routes if needed
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

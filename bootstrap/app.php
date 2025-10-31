@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 'api/*', // Exempt all API routes from CSRF
             ]);
             
+            // Redirect authenticated users to admin dashboard
+            $middleware->redirectGuestsTo('/login');
+            $middleware->redirectUsersTo('/admin');
+            
             // Enable session and cookie handling for API routes (for cart functionality)
             $middleware->api(prepend: [
                 \Illuminate\Cookie\Middleware\EncryptCookies::class,

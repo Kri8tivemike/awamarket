@@ -1,0 +1,87 @@
+CRITICAL FILES TO UPDATE ON CPANEL
+====================================
+
+📁 FOLDERS TO UPLOAD (ENTIRE FOLDERS):
+---------------------------------------
+app/Http/Controllers/Auth/          (Entire folder)
+app/Http/Requests/Auth/             (Entire folder - NEW)
+resources/views/auth/               (Entire folder - NEW)
+resources/views/profile/            (Entire folder - NEW)
+resources/views/layouts/            (Updated files)
+resources/views/components/         (Updated files)
+
+
+📄 INDIVIDUAL FILES TO UPDATE:
+-------------------------------
+
+1. ROUTES:
+   routes/web.php
+   routes/auth.php                  (NEW - must add)
+
+2. BOOTSTRAP:
+   bootstrap/app.php
+
+3. VIEWS/COMPONENTS:
+   resources/views/components/admin-sidebar.blade.php
+   resources/views/components/application-logo.blade.php
+
+4. JAVASCRIPT:
+   public/js/admin-responsive.js
+
+5. COMPOSER:
+   composer.json
+   composer.lock
+
+
+🗄️ AFTER UPLOAD - RUN THESE COMMANDS:
+--------------------------------------
+cd /home/youruser/public_html
+composer install --no-dev --optimize-autoloader
+php artisan migrate --force
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+php artisan config:cache
+php artisan route:cache
+php artisan optimize
+
+
+👤 CREATE ADMIN USER (if needed):
+----------------------------------
+php artisan tinker
+
+Then run:
+\App\Models\User::create([
+    'name' => 'Admin',
+    'email' => 'your-email@domain.com',
+    'password' => bcrypt('your-password')
+]);
+
+
+⚙️ CHECK .ENV FILE:
+-------------------
+SESSION_DRIVER=file
+APP_ENV=production
+APP_DEBUG=false
+
+
+✅ TEST AFTER DEPLOYMENT:
+-------------------------
+1. Visit yourdomain.com - Homepage should work
+2. Visit yourdomain.com/login - Login page should load
+3. Login with admin credentials
+4. Should redirect to /admin
+5. Test logout button
+6. Try accessing /admin after logout (should redirect to login)
+
+
+🚨 IF SOMETHING BREAKS:
+------------------------
+1. Restore database backup
+2. Restore file backup
+3. Run: php artisan cache:clear
+
+
+ESTIMATED TIME: 20-30 minutes
+DOWNTIME: 5-10 minutes (during composer install & migrations)

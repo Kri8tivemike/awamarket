@@ -44,17 +44,46 @@
                 </a>
             </div>
         </div>
+        
+        <!-- Account -->
+        <div class="mt-4">
+            <h3 class="px-3 text-xs sidebar-section-header text-amber-700 uppercase tracking-wider mb-4">Account</h3>
+            <div class="space-y-2">
+                <form method="POST" action="{{ route('logout') }}" id="logout-form" style="display: inline;">
+                    @csrf
+                    <button type="submit" id="logout-button" class="sidebar-nav-item flex items-center px-4 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-300 w-full text-left" style="border: none; background: none; cursor: pointer;">
+                        <i class="fas fa-sign-out-alt mr-3 text-sm"></i>
+                        <span class="text-sm font-medium">Logout</span>
+                    </button>
+                </form>
+                <script>
+                    (function() {
+                        const logoutForm = document.getElementById('logout-form');
+                        const logoutButton = document.getElementById('logout-button');
+                        
+                        if (logoutForm && logoutButton) {
+                            // Ensure form submits properly
+                            logoutButton.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                console.log('Logout button clicked! Submitting form...');
+                                logoutForm.submit();
+                            });
+                        }
+                    })();
+                </script>
+            </div>
+        </div>
     </nav>
 
     <!-- User Profile -->
     <div class="absolute bottom-0 left-0 right-0 p-4 sidebar-user-profile">
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-3 bg-amber-50/50 rounded-xl p-3">
             <div class="w-9 h-9 sidebar-user-avatar rounded-full flex items-center justify-center">
                 <i class="fas fa-user text-amber-700 text-sm"></i>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-gray-800 truncate">Admin User</p>
-                <p class="text-xs text-amber-700 truncate font-medium">Administrator</p>
+                <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::user()->name }}</p>
+                <p class="text-xs text-amber-700 truncate font-medium">{{ Auth::user()->email }}</p>
             </div>
             <div class="w-2 h-2 bg-green-400 rounded-full shadow-lg animate-pulse"></div>
         </div>
