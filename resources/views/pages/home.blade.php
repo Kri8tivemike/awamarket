@@ -2,6 +2,56 @@
 
     <!-- Hero Banner Section -->
     <section class="relative overflow-hidden w-full bg-gray-900 mt-0">
+        <style>
+            /* Hero Banner Styles */
+            .banner-container {
+                position: relative;
+                width: 100%;
+                overflow: hidden;
+            }
+            
+            /* Mobile: 1:1 aspect ratio with centered image */
+            @media (max-width: 767px) {
+                .banner-container {
+                    aspect-ratio: 1 / 1;
+                }
+                
+                .banner-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center center;
+                }
+            }
+            
+            /* Desktop: Original behavior (auto height based on image) */
+            @media (min-width: 768px) {
+                .banner-image {
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                }
+            }
+            
+            .banner-fallback {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                color: white;
+                padding: 2rem;
+                min-height: 300px;
+            }
+            
+            @media (min-width: 768px) {
+                .banner-fallback {
+                    min-height: 400px;
+                }
+            }
+        </style>
+        
         @if($banner)
             <div class="banner-container">
                 @if($banner->image)
@@ -11,22 +61,36 @@
                         <img src="{{ asset($banner->image) }}" alt="Banner" class="banner-image">
                     @endif
                 @else
-                    <div class="banner-fallback"></div>
+                    <div class="banner-fallback">
+                        <div class="px-4 sm:px-6 lg:px-8">
+                            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
+                                Welcome to AwaMarket
+                            </h1>
+                            <p class="text-base sm:text-lg lg:text-xl mb-6">
+                                Discover amazing products at unbeatable prices
+                            </p>
+                            <a href="/shop-now" class="inline-block bg-white text-blue-600 px-6 py-2 rounded-full font-semibold text-base hover:bg-gray-100 transition-all duration-300">
+                                Shop Now
+                            </a>
+                        </div>
+                    </div>
                 @endif
             </div>
         @else
             <!-- Default fallback when no banner exists -->
-            <div class="banner-fallback">
-                <div class="px-4 sm:px-6 lg:px-8">
-                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
-                        Welcome to AwaMarket
-                    </h1>
-                    <p class="text-base sm:text-lg lg:text-xl mb-6">
-                        Discover amazing products at unbeatable prices
-                    </p>
-                    <a href="/shop-now" class="inline-block bg-white text-blue-600 px-6 py-2 rounded-full font-semibold text-base hover:bg-gray-100 transition-all duration-300">
-                        Shop Now
-                    </a>
+            <div class="banner-container">
+                <div class="banner-fallback">
+                    <div class="px-4 sm:px-6 lg:px-8">
+                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
+                            Welcome to AwaMarket
+                        </h1>
+                        <p class="text-base sm:text-lg lg:text-xl mb-6">
+                            Discover amazing products at unbeatable prices
+                        </p>
+                        <a href="/shop-now" class="inline-block bg-white text-blue-600 px-6 py-2 rounded-full font-semibold text-base hover:bg-gray-100 transition-all duration-300">
+                            Shop Now
+                        </a>
+                    </div>
                 </div>
             </div>
         @endif
@@ -181,14 +245,14 @@
 
             <!-- Products Grid -->
             @if($products->count() > 0)
-                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6 overflow-visible">
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8 overflow-visible">
                     @foreach($products as $product)
                         <x-product-card 
                             :product="$product"
                             name="{{ $product->name }}"
                             image="{{ $product->featured_image ?? ($product->images ? (is_array($product->images) ? ($product->images[0] ?? '') : (json_decode($product->images)[0] ?? '')) : '') }}"
                             :priceMin="$product->price"
-                            :priceMax="$product->price"
+                            :priceMax="$product->sale_price ?? $product->price"
                             :optionsCount="$product->options ? (is_array($product->options) ? count($product->options) : count(json_decode($product->options, true))) : 0" />
                     @endforeach
                 </div>

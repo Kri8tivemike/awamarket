@@ -11,34 +11,40 @@
     }
 @endphp
 
-<div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
-    <a href="{{ $product ? route('product.show', $product->id) : '#' }}" class="block aspect-square bg-gray-100 overflow-hidden">
-        <img src="{{ $image }}" alt="{{ $name }}" class="w-full h-full object-contain hover:scale-105 transition-transform duration-300 p-2">
+<div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300 group h-full flex flex-col">
+    <a href="{{ $product ? route('product.show', $product->id) : '#' }}" class="block aspect-square bg-gray-50 overflow-hidden relative">
+        <img src="{{ $image }}" alt="{{ $name }}" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105">
+        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 transition-all duration-300"></div>
     </a>
-    <div class="p-3">
-        <a href="{{ $product ? route('product.show', $product->id) : '#' }}" class="block hover:text-orange-600 transition-colors duration-200">
-            <h3 class="text-sm font-medium text-gray-900 line-clamp-2 min-h-[2.5rem]">{{ $name }}</h3>
+    <div class="p-4 sm:p-5 lg:p-6 flex-1 flex flex-col">
+        <a href="{{ $product ? route('product.show', $product->id) : '#' }}" class="block hover:text-orange-600 transition-colors duration-150 flex-1">
+            <h3 class="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 leading-tight line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem] lg:min-h-[3.5rem]">{{ $name }}</h3>
         </a>
         
-        @if($priceRange)
-            <p class="mt-2 text-base font-bold text-gray-900">{{ $priceRange }}</p>
-        @elseif($priceMin > 0 && $priceMax > 0)
-            <p class="mt-2 text-base font-bold text-gray-900">₦{{ number_format($priceMin, 0) }} - ₦{{ number_format($priceMax, 0) }}</p>
-        @else
-            <p class="mt-2 text-sm text-gray-500">See options</p>
-        @endif
+        <div class="mt-3 sm:mt-4">
+            @if($priceRange)
+                <p class="text-base sm:text-lg lg:text-xl font-bold text-gray-900">{{ $priceRange }}</p>
+            @elseif($priceMin > 0 && $priceMax > 0)
+                <p class="text-base sm:text-lg lg:text-xl font-bold text-gray-900">₦{{ number_format($priceMin, 0) }} - ₦{{ number_format($priceMax, 0) }}</p>
+            @else
+                <p class="text-sm text-gray-500">See options</p>
+            @endif
+        </div>
         
         @if($optionsCount > 0)
-        <div class="mt-2">
-            <select class="text-xs text-gray-600 border border-gray-200 rounded px-2 py-1 w-full bg-white" onclick="showProductModal({{ $product ? $product->id : 'null' }}, '{{ $name }}')">
-                <option>Options: {{ $optionsCount }}</option>
-            </select>
+        <div class="mt-3 sm:mt-4">
+            <button type="button" onclick="showProductModal({{ $product ? $product->id : 'null' }}, '{{ $name }}')" class="text-sm text-gray-700 border border-gray-200 rounded-lg px-3 py-2 w-full bg-white hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 flex items-center justify-between">
+                <span>Options: {{ $optionsCount }}</span>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
         </div>
         @endif
         
-        <div class="mt-3">
-            <button onclick="showProductModal({{ $product ? $product->id : 'null' }}, '{{ $name }}')" class="inline-flex items-center justify-center gap-2 px-3 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm rounded w-full transition-colors duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4">
+        <div class="mt-4 sm:mt-5">
+            <button onclick="showProductModal({{ $product ? $product->id : 'null' }}, '{{ $name }}')" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white text-sm sm:text-base font-medium rounded-lg w-full transition-colors duration-150 shadow-sm hover:shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 sm:w-5 sm:h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25h9.75m-12-9h12.622a.75.75 0 01.737.91l-1.5 7.5a.75.75 0 01-.737.59H7.5m0 0L6 6.75m1.5 7.5L5.25 18.75a1.5 1.5 0 001.5 1.5h10.5a1.5 1.5 0 001.5-1.5L18 15.75"></path>
                 </svg>
                 Add to cart
@@ -96,7 +102,7 @@ function showProductModal(productId, productName) {
 // Update modal options dynamically
 function updateModalOptions(options) {
     const modal = document.getElementById('product-options-modal');
-    const optionsContainer = modal.querySelector('.space-y-3');
+    const optionsContainer = modal.querySelector('.space-y-2');
     
     if (!optionsContainer) return;
     
@@ -119,22 +125,22 @@ function updateModalOptions(options) {
         const imageUrl = option.image || placeholderSVG;
         
         optionEl.innerHTML = `
-            <div class="product-option p-3 bg-white border border-gray-200 rounded-lg transition-all duration-200">
+            <div class="product-option p-2 sm:p-3 bg-white border border-gray-200 rounded-lg transition-all duration-200">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3 flex-1">
-                        <div class="w-14 h-14 bg-orange-50 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div class="flex items-center space-x-2 sm:space-x-3 flex-1">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-orange-50 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
                             <img src="${imageUrl}" alt="${option.name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='${placeholderSVG}';">
                         </div>
-                        <div class="flex-1">
-                            <p class="product-name text-sm font-semibold text-gray-900">${option.name}</p>
-                            <p class="product-price text-base font-bold text-gray-900" data-price="${option.raw_price}">${option.price}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="product-name text-sm font-semibold text-gray-900 truncate">${option.name}</p>
+                            <p class="product-price text-sm sm:text-base font-bold text-gray-900" data-price="${option.raw_price}">${option.price}</p>
                         </div>
                     </div>
-                    <button class="pick-btn bg-white hover:bg-orange-500 hover:text-white text-gray-700 border border-gray-300 px-5 py-1.5 rounded-md text-sm font-medium transition-all duration-200" data-index="${index}">
+                    <button class="pick-btn bg-white hover:bg-orange-500 hover:text-white text-gray-700 border border-gray-300 px-3 sm:px-5 py-1 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200" data-index="${index}">
                         Pick
                     </button>
                 </div>
-                <div class="quantity-controls hidden mt-3 flex items-center justify-center space-x-4 py-2 bg-gray-50 rounded-lg">
+                <div class="quantity-controls hidden mt-2 sm:mt-3 flex items-center justify-center space-x-4 py-2 bg-gray-50 rounded-lg">
                     <button class="quantity-minus w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-full hover:border-orange-500 transition-colors duration-200" data-index="${index}">
                         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
@@ -356,6 +362,12 @@ function handleAddToCart() {
 
 // Update cart count badge
 function updateCartCount(count) {
+    // Use global updateCartBadges if available (updates both desktop and mobile)
+    if (window.updateCartBadges) {
+        window.updateCartBadges(count);
+    }
+    
+    // Legacy support - update any .cart-count elements
     const cartBadges = document.querySelectorAll('.cart-count');
     cartBadges.forEach(badge => {
         badge.textContent = count;
