@@ -192,66 +192,58 @@
     </section>
 
     <!-- Modern Delete Confirmation Modal -->
-    <div id="deleteModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <!-- Background overlay -->
-        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <!-- Background overlay with black transparency -->
-            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-out" aria-hidden="true" onclick="closeDeleteModal()"></div>
+        <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-out" aria-hidden="true" onclick="closeDeleteModal()"></div>
 
-            <!-- This element is to trick the browser into centering the modal contents. -->
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <!-- Modal panel -->
+        <div class="relative bg-white rounded-3xl p-6 text-left overflow-hidden shadow-2xl transform transition-all duration-300 ease-out max-w-md w-full modal-content" style="transform: translateY(0px) scale(1); opacity: 1;">
+            <!-- Close button -->
+            <button type="button" 
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200" 
+                    onclick="closeDeleteModal()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
 
-            <!-- Modal panel -->
-            <div class="inline-block align-bottom bg-white rounded-2xl px-4 pt-5 pb-4 text-left overflow-hidden shadow-2xl transform transition-all duration-300 ease-out sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 modal-content">
-                <!-- Modal content -->
-                <div class="sm:flex sm:items-start">
-                    <!-- Icon -->
-                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 animate-pulse">
-                        <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                        </svg>
-                    </div>
-                    
-                    <!-- Content -->
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
-                        <h3 class="text-lg leading-6 font-semibold text-gray-900 mb-2" id="modal-title">
-                            Remove Item from Cart
-                        </h3>
-                        <div class="mt-2">
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                Are you sure you want to remove this item from your cart? This action cannot be undone.
-                            </p>
-                        </div>
-                    </div>
+            <!-- Modal content -->
+            <div class="flex items-start space-x-4">
+                <!-- Icon -->
+                <div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                    <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"></path>
+                    </svg>
                 </div>
                 
-                <!-- Action buttons -->
-                <div class="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-                    <!-- Cancel button -->
-                    <button type="button" 
-                            class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 ease-in-out transform hover:scale-105" 
-                            onclick="closeDeleteModal()">
-                        <span class="flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                            Cancel
-                        </span>
-                    </button>
-                    
-                    <!-- Delete button -->
-                    <button type="button" 
-                            id="confirmDeleteBtn"
-                            class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-transparent bg-red-600 px-4 py-2.5 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 ease-in-out transform hover:scale-105">
-                        <span class="flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                            Remove Item
-                        </span>
-                    </button>
+                <!-- Content -->
+                <div class="flex-1 pt-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2" id="modal-title">
+                        Remove Item from Cart
+                    </h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Are you sure you want to remove this item from your cart? This action cannot be undone.
+                    </p>
                 </div>
             </div>
+            
+            <!-- Action buttons -->
+            <div class="mt-6 flex justify-end space-x-3">
+                <!-- Cancel button -->
+                <button type="button" 
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-300" 
+                        onclick="closeDeleteModal()">
+                    Cancel
+                </button>
+                
+                <!-- Delete button -->
+                <button type="button" 
+                        id="confirmDeleteBtn"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    Remove Item
+                </button>
+            </div>
+        </div>
         </div>
     </div>
 

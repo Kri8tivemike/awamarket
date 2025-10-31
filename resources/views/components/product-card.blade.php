@@ -11,29 +11,29 @@
     }
 @endphp
 
-<div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300 group h-full flex flex-col">
-    <a href="{{ $product ? route('product.show', $product->id) : '#' }}" class="block aspect-square bg-gray-50 overflow-hidden relative">
-        <img src="{{ $image }}" alt="{{ $name }}" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105">
-        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 transition-all duration-300"></div>
+<div class="product-card">
+    <a href="{{ $product ? route('product.show', $product->id) : '#' }}" class="product-card-image">
+        <img src="{{ $image }}" alt="{{ $name }}">
+        <div class="product-card-overlay"></div>
     </a>
-    <div class="p-4 sm:p-5 lg:p-6 flex-1 flex flex-col">
-        <a href="{{ $product ? route('product.show', $product->id) : '#' }}" class="block hover:text-orange-600 transition-colors duration-150 flex-1">
-            <h3 class="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 leading-tight line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem] lg:min-h-[3.5rem]">{{ $name }}</h3>
+    <div class="product-card-content">
+        <a href="{{ $product ? route('product.show', $product->id) : '#' }}" class="product-card-title">
+            <h3>{{ $name }}</h3>
         </a>
         
-        <div class="mt-3 sm:mt-4">
+        <div class="product-card-price">
             @if($priceRange)
-                <p class="text-base sm:text-lg lg:text-xl font-bold text-gray-900">{{ $priceRange }}</p>
+                <p>{{ $priceRange }}</p>
             @elseif($priceMin > 0 && $priceMax > 0)
-                <p class="text-base sm:text-lg lg:text-xl font-bold text-gray-900">₦{{ number_format($priceMin, 0) }} - ₦{{ number_format($priceMax, 0) }}</p>
+                <p>₦{{ number_format($priceMin, 0) }} - ₦{{ number_format($priceMax, 0) }}</p>
             @else
                 <p class="text-sm text-gray-500">See options</p>
             @endif
         </div>
         
         @if($optionsCount > 0)
-        <div class="mt-3 sm:mt-4">
-            <button type="button" onclick="showProductModal({{ $product ? $product->id : 'null' }}, '{{ $name }}')" class="text-sm text-gray-700 border border-gray-200 rounded-lg px-3 py-2 w-full bg-white hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 flex items-center justify-between">
+        <div class="product-card-options">
+            <button type="button" onclick="showProductModal({{ $product ? $product->id : 'null' }}, '{{ $name }}')">
                 <span>Options: {{ $optionsCount }}</span>
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -42,9 +42,9 @@
         </div>
         @endif
         
-        <div class="mt-4 sm:mt-5">
-            <button onclick="showProductModal({{ $product ? $product->id : 'null' }}, '{{ $name }}')" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 sm:py-3 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white text-sm sm:text-base font-medium rounded-lg w-full transition-colors duration-150 shadow-sm hover:shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 sm:w-5 sm:h-5">
+        <div class="product-card-button-container">
+            <button onclick="showProductModal({{ $product ? $product->id : 'null' }}, '{{ $name }}')" class="product-card-add-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25h9.75m-12-9h12.622a.75.75 0 01.737.91l-1.5 7.5a.75.75 0 01-.737.59H7.5m0 0L6 6.75m1.5 7.5L5.25 18.75a1.5 1.5 0 001.5 1.5h10.5a1.5 1.5 0 001.5-1.5L18 15.75"></path>
                 </svg>
                 Add to cart
