@@ -131,16 +131,16 @@
 }
 
 .product-card-title {
-    @apply block hover:text-orange-600 transition-colors duration-300 flex-1;
+    @apply block hover:text-orange-600 transition-colors duration-300;
 }
 
 .product-card-title h3 {
-    @apply text-sm sm:text-base lg:text-xl font-semibold text-gray-900 leading-tight line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem] lg:min-h-[4rem];
+    @apply text-sm sm:text-base lg:text-xl font-semibold text-gray-900 leading-tight line-clamp-2;
     font-weight: 600;
 }
 
 .product-card-price {
-    @apply mt-3 sm:mt-4 lg:mt-5;
+    @apply mt-1.5 sm:mt-2 lg:mt-2.5;
 }
 
 .product-card-price p {

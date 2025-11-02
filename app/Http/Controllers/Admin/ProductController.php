@@ -400,7 +400,8 @@ class ProductController extends Controller
         
         // Delete option images if they exist
         if ($product->option_images) {
-            $optionImages = json_decode($product->option_images, true);
+            // option_images is already cast as array in the model
+            $optionImages = $product->option_images;
             if (is_array($optionImages)) {
                 foreach ($optionImages as $imagePath) {
                     $fullPath = public_path('storage/' . $imagePath);
