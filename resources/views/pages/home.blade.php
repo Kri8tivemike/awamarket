@@ -114,7 +114,7 @@
 
             <!-- Categories Horizontal Scroll -->
             <div class="relative overflow-hidden">
-                <div id="category-slider" class="flex gap-6 pb-4 scrollbar-hide transition-transform duration-500 ease-in-out"
+                <div id="category-slider" class="flex gap-6 pb-4 scrollbar-hide"
                      style="scrollbar-width: none; -ms-overflow-style: none;">
                     <style>
                         .scrollbar-hide::-webkit-scrollbar {
@@ -169,8 +169,8 @@
                         </div>
                     @endforelse
                     
-                    <!-- Duplicate categories for seamless loop -->
-                    @if($categories->count() > 0)
+                    <!-- Duplicate categories for seamless loop (only if more than 4 categories) -->
+                    @if($categories->count() > 4)
                         @foreach($categories as $index => $category)
                             <x-category-card 
                                 :category="$category->name" 
@@ -187,20 +187,31 @@
                     const slider = document.getElementById('category-slider');
                     const categories = @json($categories);
                     
-                    if (categories && categories.length > 0) {
+                    // Only enable auto-scroll if there are more than 4 categories
+                    if (categories && categories.length > 4) {
                         let scrollAmount = 0;
-                        const cardWidth = 320; // Approximate width of each card including gap
+                        const cardWidth = 320; // Width of each card including gap
                         const totalWidth = cardWidth * categories.length;
                         let isScrolling = true;
+                        let lastTime = performance.now();
                         
-                        function autoSlide() {
-                            if (!isScrolling) return;
+                        function autoSlide(currentTime) {
+                            if (!isScrolling) {
+                                lastTime = currentTime;
+                                requestAnimationFrame(autoSlide);
+                                return;
+                            }
                             
-                            scrollAmount += 1;
+                            // Calculate delta time for smooth animation
+                            const deltaTime = currentTime - lastTime;
+                            lastTime = currentTime;
                             
-                            // Reset when we've scrolled through all original cards
+                            // Scroll speed: pixels per millisecond (adjust for desired speed)
+                            scrollAmount += (deltaTime * 0.05);
+                            
+                            // Seamless loop: reset when we've scrolled through the original set
                             if (scrollAmount >= totalWidth) {
-                                scrollAmount = 0;
+                                scrollAmount = scrollAmount % totalWidth;
                             }
                             
                             slider.style.transform = `translateX(-${scrollAmount}px)`;
@@ -209,7 +220,7 @@
                         }
                         
                         // Start auto-sliding
-                        autoSlide();
+                        requestAnimationFrame(autoSlide);
                         
                         // Pause on hover
                         slider.addEventListener('mouseenter', function() {
@@ -219,8 +230,10 @@
                         // Resume on mouse leave
                         slider.addEventListener('mouseleave', function() {
                             isScrolling = true;
-                            autoSlide();
                         });
+                    } else if (categories && categories.length > 0) {
+                        // For 4 or fewer categories, just display them normally without scrolling
+                        slider.style.transform = 'translateX(0)';
                     }
                 });
             </script>

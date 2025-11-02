@@ -390,9 +390,11 @@
                                     </td>
                                     <td class="px-2 py-3">
                                         <div class="text-sm font-semibold glass-text-dark">
-                                            @if($product->sale_price)
-                                                <span class="line-through text-gray-500">₦{{ number_format($product->price, 2) }}</span>
-                                                <span class="text-red-600">₦{{ number_format($product->sale_price, 2) }}</span>
+                                            @if($product->sale_price && $product->sale_price != $product->price)
+                                                <div class="flex flex-col">
+                                                    <span class="text-gray-700">₦{{ number_format($product->price, 2) }}</span>
+                                                    <span class="text-xs text-gray-500">- ₦{{ number_format($product->sale_price, 2) }}</span>
+                                                </div>
                                             @else
                                                 ₦{{ number_format($product->price, 2) }}
                                             @endif
@@ -402,23 +404,42 @@
                                         <div class="text-sm glass-text-medium">{{ $product->stock_quantity }}</div>
                                     </td>
                                     <td class="px-2 py-3 hidden lg:table-cell">
-                                        <div class="flex items-center space-x-1">
-                                            @if($product->option_images && is_array($product->option_images) && count($product->option_images) > 0)
-                                                @foreach(array_slice($product->option_images, 0, 3) as $index => $imagePath)
-                                                    @if($imagePath && file_exists(public_path($imagePath)))
-                                                        <img src="{{ asset($imagePath) }}" 
-                                                             alt="Option {{ $index + 1 }}" 
-                                                             class="w-6 h-6 rounded object-cover border border-gray-200 shadow-sm"
-                                                             title="Option {{ $index + 1 }} Image">
+                                        <div class="flex items-center space-x-2">
+                                            @php
+                                                $optionsCount = 0;
+                                                if ($product->options) {
+                                                    $optionsArray = is_array($product->options) ? $product->options : json_decode($product->options, true);
+                                                    $optionsCount = is_array($optionsArray) ? count($optionsArray) : 0;
+                                                }
+                                                $hasOptionImages = $product->option_images && is_array($product->option_images) && count($product->option_images) > 0;
+                                            @endphp
+                                            
+                                            @if($optionsCount > 0)
+                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                                                    {{ $optionsCount }} {{ $optionsCount === 1 ? 'option' : 'options' }}
+                                                </span>
+                                            @endif
+                                            
+                                            @if($hasOptionImages)
+                                                <div class="flex items-center space-x-1">
+                                                    @foreach(array_slice($product->option_images, 0, 2) as $index => $imagePath)
+                                                        @if($imagePath && file_exists(public_path('storage/' . $imagePath)))
+                                                            <img src="{{ asset('storage/' . $imagePath) }}" 
+                                                                 alt="Option {{ $index + 1 }}" 
+                                                                 class="w-6 h-6 rounded object-cover border border-gray-200 shadow-sm"
+                                                                 title="Option {{ $index + 1 }} Image">
+                                                        @endif
+                                                    @endforeach
+                                                    @if(count($product->option_images) > 2)
+                                                        <span class="text-xs text-gray-500 bg-gray-100 px-1 py-0.5 rounded">
+                                                            +{{ count($product->option_images) - 2 }}
+                                                        </span>
                                                     @endif
-                                                @endforeach
-                                                @if(count($product->option_images) > 3)
-                                                    <span class="text-xs text-gray-500 bg-gray-100 px-1 py-0.5 rounded">
-                                                        +{{ count($product->option_images) - 3 }}
-                                                    </span>
-                                                @endif
-                                            @else
-                                                <span class="text-xs text-gray-400">No images</span>
+                                                </div>
+                                            @endif
+                                            
+                                            @if($optionsCount === 0 && !$hasOptionImages)
+                                                <span class="text-xs text-gray-400">No options</span>
                                             @endif
                                         </div>
                                     </td>
@@ -1023,6 +1044,15 @@
             
             const formData = new FormData(this);
             
+            // Add loading state to submit button (button is outside form, so find it by form attribute)
+            const submitButton = document.querySelector('button[form="addProductForm"]');
+            const originalButtonText = submitButton ? submitButton.innerHTML : '';
+            
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating...';
+            }
+            
             try {
                 const response = await fetch('/admin/products', {
                     method: 'POST',
@@ -1034,24 +1064,38 @@
                 
                 const result = await response.json();
                 
-                if (result.success) {
-                    showModernAlert(result.message, 'success');
+                // Handle validation errors (422)
+                if (response.status === 422) {
+                    if (result.errors) {
+                        // Format validation errors nicely
+                        const errorMessages = Object.entries(result.errors)
+                            .map(([field, messages]) => {
+                                const fieldName = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                                return `${fieldName}: ${messages.join(', ')}`;
+                            })
+                            .join('\n');
+                        showModernAlert(`Validation Errors:\n\n${errorMessages}`, 'error');
+                    } else {
+                        showModernAlert(result.message || 'Validation failed', 'error');
+                    }
+                } else if (result.success) {
+                    showModernAlert(result.message || 'Product created successfully!', 'success');
                     closeAddProductModal();
                     setTimeout(() => {
                         location.reload(); // Refresh the page to show the new product
                     }, 1500);
                 } else {
-                    if (result.errors) {
-                        // Show validation errors
-                        const errorMessages = Object.values(result.errors).flat().join('\n');
-                        showModernAlert(`Validation Error:\n${errorMessages}`, 'error');
-                    } else {
-                        showModernAlert(result.message || 'Error creating product', 'error');
-                    }
+                    showModernAlert(result.message || 'Error creating product', 'error');
                 }
             } catch (error) {
                 console.error('Error creating product:', error);
-                showModernAlert('Error creating product', 'error');
+                showModernAlert('Error creating product: ' + error.message, 'error');
+            } finally {
+                // Restore button state
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonText;
+                }
             }
         });
         

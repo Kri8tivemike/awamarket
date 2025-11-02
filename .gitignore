@@ -1,6 +1,10 @@
 *.log
 .DS_Store
 .env
+
+# Uploaded files
+/public/uploads/*
+!/public/uploads/.gitkeep
 .env.backup
 .env.production
 .phpactor.json

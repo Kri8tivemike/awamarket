@@ -46,22 +46,32 @@
                     <!-- Thumbnail Images -->
                     <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-4 gap-2" id="thumbnail-container">
                         <!-- Main Product Image Thumbnail -->
-                        <button class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-green-500 thumbnail-btn" 
-                                onclick="changeMainImage('{{ $product->image_url }}')">
-                            <img src="{{ $product->image_url }}" 
-                                 alt="{{ $product->name }} thumbnail" 
-                                 class="w-full h-full object-cover">
-                        </button>
+                        @if($product->featured_image)
+                            <button class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-green-500 thumbnail-btn" 
+                                    onclick="changeMainImage('{{ $product->image_url }}')">
+                                <img src="{{ $product->image_url }}" 
+                                     alt="{{ $product->name }} thumbnail" 
+                                     class="w-full h-full object-cover">
+                            </button>
+                        @endif
                         
-                        <!-- Product Option Images Thumbnails -->
-                        @if($product->option_images_urls && is_array($product->option_images_urls))
-                            @foreach($product->option_images_urls as $index => $optionImage)
-                                <button class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-transparent hover:border-green-300 thumbnail-btn" 
-                                        onclick="selectOptionByImage('{{ $optionImage }}', {{ $index }})">
-                                    <img src="{{ $optionImage }}" 
-                                         alt="Option {{ $index + 1 }} thumbnail" 
-                                         class="w-full h-full object-cover">
-                                </button>
+                        <!-- Product Option Images Thumbnails (only show if corresponding option exists) -->
+                        @if($product->options && is_array($product->options) && count($product->options) > 0)
+                            @foreach($product->options as $index => $option)
+                                @if(isset($product->option_images[$index]) && $product->option_images[$index])
+                                    @php
+                                        $optionImageUrl = asset('storage/' . $product->option_images[$index]);
+                                        if (str_starts_with($product->option_images[$index], 'uploads/')) {
+                                            $optionImageUrl = asset($product->option_images[$index]);
+                                        }
+                                    @endphp
+                                    <button class="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-transparent hover:border-green-300 thumbnail-btn" 
+                                            onclick="changeMainImage('{{ $optionImageUrl }}'); selectOption({{ $index }})">
+                                        <img src="{{ $optionImageUrl }}" 
+                                             alt="{{ $option['title'] ?? 'Option ' . ($index + 1) }} thumbnail" 
+                                             class="w-full h-full object-cover">
+                                    </button>
+                                @endif
                             @endforeach
                         @endif
                     </div>

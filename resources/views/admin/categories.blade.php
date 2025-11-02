@@ -389,13 +389,23 @@
                 body: formData
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
+                // Parse JSON regardless of status
+                return response.json().then(data => ({ status: response.status, data }));
             })
-            .then(data => {
-                if (data.success) {
+            .then(({ status, data }) => {
+                if (status === 422) {
+                    // Validation error
+                    let errorMessage = 'Validation failed:\n';
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(key => {
+                            errorMessage += `${data.errors[key].join(', ')}\n`;
+                        });
+                    } else if (data.message) {
+                        errorMessage = data.message;
+                    }
+                    showCustomAlert(errorMessage, 'Validation Error', null, 'error');
+                } else if (data.success) {
+                    document.getElementById('categoryModal').classList.add('hidden');
                     showCustomAlert('Category saved successfully!', 'Success', () => {
                         location.reload();
                     }, 'success');
@@ -444,7 +454,7 @@
                 <div class="bg-white rounded-lg shadow-2xl border border-gray-200 p-6 w-96 max-w-sm mx-4 text-center">
                     ${iconHtml}
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">${title}</h3>
-                    <p class="text-gray-600 mb-6">${message}</p>
+                    <p class="text-gray-600 mb-6 whitespace-pre-line text-left">${message}</p>
                     <div class="flex justify-center space-x-3">
                         ${type === 'confirm' ? `<button id="cancelAlert" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 text-sm">Cancel</button>` : ''}
                         <button id="confirmAlert" class="px-4 py-2 ${buttonClass} text-white rounded-md text-sm">${type === 'confirm' ? 'Delete' : 'OK'}</button>

@@ -27,10 +27,10 @@ class AdminController extends Controller
         $totalOrders = Order::count();
         
         // Calculate total revenue
-        $totalRevenue = Order::whereIn('status', ['completed', 'delivered'])->sum('total');
+        $totalRevenue = Order::whereIn('status', [Order::STATUS_DELIVERED_SUCCESSFULLY])->sum('total');
         
         // Calculate monthly revenue (current month)
-        $monthlyRevenue = Order::whereIn('status', ['completed', 'delivered'])
+        $monthlyRevenue = Order::whereIn('status', [Order::STATUS_DELIVERED_SUCCESSFULLY])
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->sum('total');
@@ -49,7 +49,7 @@ class AdminController extends Controller
             ->count();
         $orderChange = $prevMonthOrders > 0 ? round((($currentMonthOrders - $prevMonthOrders) / $prevMonthOrders) * 100) : 0;
         
-        $prevMonthRevenue = Order::whereIn('status', ['completed', 'delivered'])
+        $prevMonthRevenue = Order::whereIn('status', [Order::STATUS_DELIVERED_SUCCESSFULLY])
             ->whereMonth('created_at', now()->subMonth()->month)
             ->whereYear('created_at', now()->subMonth()->year)
             ->sum('total');

@@ -283,7 +283,7 @@
                                     @foreach($existingOptions as $index => $option)
                                         <div class="option-item border border-gray-200 rounded-lg p-4 bg-gray-50">
                                             <div class="flex justify-between items-center mb-3">
-                                                <h4 class="font-medium text-gray-700">Option {{ $index + 1 }}</h4>
+                                                <h4 class="font-medium text-gray-700">Option {{ $loop->iteration }}</h4>
                                                 <button type="button" onclick="removeOption(this)" class="text-red-600 hover:text-red-800 text-sm">
                                                     <i class="fas fa-trash mr-1"></i>Remove
                                                 </button>
@@ -445,7 +445,8 @@
         });
 
         // Options management functions
-        let optionIndex = {{ count($existingOptions ?? []) }};
+        // Calculate next available option index (maximum existing index + 1)
+        let optionIndex = {{ !empty($existingOptions) ? max(array_keys($existingOptions)) + 1 : 0 }};
 
         function addNewOption() {
             const container = document.getElementById('optionsContainer');

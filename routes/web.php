@@ -1,7 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\WhatsAppController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
@@ -26,39 +31,50 @@ Route::get('/dashboard', function () {
 
 // Admin Dashboard Routes - Protected by Authentication
 Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
-    Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
-    Route::get('/products/{id}', [AdminController::class, 'showProduct'])->name('admin.products.show');
-    Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
-    Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
-    Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+    // Dashboard
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     
-    // Categories API for dropdowns
-    Route::get('/categories/api', [AdminController::class, 'getCategoriesApi']);
-    Route::get('/categories', [AdminController::class, 'categories'])->name('admin.categories');
-    Route::post('/categories', [AdminController::class, 'storeCategory'])->name('admin.categories.store');
-    Route::get('/categories/{id}/edit', [AdminController::class, 'editCategory'])->name('admin.categories.edit');
-    Route::put('/categories/{id}', [AdminController::class, 'updateCategory'])->name('admin.categories.update');
-    Route::delete('/categories/{id}', [AdminController::class, 'deleteCategory'])->name('admin.categories.delete');
-    Route::post('/categories/bulk-delete', [AdminController::class, 'bulkDeleteCategories'])->name('admin.categories.bulk-delete');
-    Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
-    Route::get('/orders/export', [AdminController::class, 'exportOrders'])->name('admin.orders.export');
-    Route::get('/orders/{id}', [AdminController::class, 'showOrder'])->name('admin.orders.show');
-    Route::get('/orders/{id}/edit', [AdminController::class, 'editOrder'])->name('admin.orders.edit');
-    Route::put('/orders/{id}', [AdminController::class, 'updateOrder'])->name('admin.orders.update');
-    Route::delete('/orders/{id}', [AdminController::class, 'deleteOrder'])->name('admin.orders.delete');
-    Route::get('/banners', [AdminController::class, 'banners'])->name('admin.banners');
-    Route::post('/banners', [AdminController::class, 'storeBanner'])->name('admin.banners.store');
-    Route::put('/banners/{id}', [AdminController::class, 'updateBanner'])->name('admin.banners.update');
-    Route::delete('/banners/{id}', [AdminController::class, 'deleteBanner'])->name('admin.banners.delete');
-    Route::patch('/banners/{id}/toggle', [AdminController::class, 'toggleBannerStatus'])->name('admin.banners.toggle');
-    Route::post('/promotion-banners', [AdminController::class, 'storePromotionBanner'])->name('admin.promotion-banners.store');
-    Route::put('/promotion-banners/{id}', [AdminController::class, 'updatePromotionBanner'])->name('admin.promotion-banners.update');
-    Route::delete('/promotion-banners/{id}', [AdminController::class, 'deletePromotionBanner'])->name('admin.promotion-banners.delete');
-    Route::patch('/promotion-banners/{id}/toggle', [AdminController::class, 'togglePromotionBannerStatus'])->name('admin.promotion-banners.toggle');
-    Route::get('/whatsapp', [AdminController::class, 'whatsapp'])->name('admin.whatsapp');
-    Route::post('/whatsapp', [AdminController::class, 'saveWhatsAppSettings'])->name('admin.whatsapp.save');
+    // Products
+    Route::get('/products', [ProductController::class, 'index'])->name('admin.products');
+    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
+    Route::get('/products/{id}', [ProductController::class, 'show'])->name('admin.products.show');
+    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.delete');
+    
+    // Categories
+    Route::get('/categories/api', [CategoryController::class, 'api']);
+    Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+    Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.delete');
+    Route::post('/categories/bulk-delete', [CategoryController::class, 'bulkDelete'])->name('admin.categories.bulk-delete');
+    
+    // Orders
+    Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders');
+    Route::get('/orders/export', [OrderController::class, 'export'])->name('admin.orders.export');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show');
+    Route::get('/orders/{id}/edit', [OrderController::class, 'edit'])->name('admin.orders.edit');
+    Route::put('/orders/{id}', [OrderController::class, 'update'])->name('admin.orders.update');
+    Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('admin.orders.delete');
+    
+    // Banners
+    Route::get('/banners', [BannerController::class, 'index'])->name('admin.banners');
+    Route::post('/banners', [BannerController::class, 'storeBanner'])->name('admin.banners.store');
+    Route::put('/banners/{id}', [BannerController::class, 'updateBanner'])->name('admin.banners.update');
+    Route::delete('/banners/{id}', [BannerController::class, 'deleteBanner'])->name('admin.banners.delete');
+    Route::patch('/banners/{id}/toggle', [BannerController::class, 'toggleBannerStatus'])->name('admin.banners.toggle');
+    
+    // Promotion Banners
+    Route::post('/promotion-banners', [BannerController::class, 'storePromotionBanner'])->name('admin.promotion-banners.store');
+    Route::put('/promotion-banners/{id}', [BannerController::class, 'updatePromotionBanner'])->name('admin.promotion-banners.update');
+    Route::delete('/promotion-banners/{id}', [BannerController::class, 'deletePromotionBanner'])->name('admin.promotion-banners.delete');
+    Route::patch('/promotion-banners/{id}/toggle', [BannerController::class, 'togglePromotionBannerStatus'])->name('admin.promotion-banners.toggle');
+    
+    // WhatsApp Settings
+    Route::get('/whatsapp', [WhatsAppController::class, 'index'])->name('admin.whatsapp');
+    Route::post('/whatsapp', [WhatsAppController::class, 'save'])->name('admin.whatsapp.save');
 });
 
 // Optional: User profile routes if needed

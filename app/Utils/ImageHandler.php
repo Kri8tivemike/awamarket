@@ -84,12 +84,19 @@ class ImageHandler
     /**
      * Get validation rules for image upload
      *
-     * @param int $maxSize Maximum size in KB (default 2MB)
+     * @param int $maxSize Maximum size in KB (default 2MB = 2048 KB)
+     * @param bool $required Whether the image is required
      * @return string
      */
-    public static function getValidationRules(int $maxSize = 2048): string
+    public static function getValidationRules(int $maxSize = 2048, bool $required = false): string
     {
         $extensions = implode(',', self::getValidExtensions());
-        return "image|mimes:{$extensions}|max:{$maxSize}";
+        $rules = "image|mimes:{$extensions}|max:{$maxSize}";
+        
+        if (!$required) {
+            $rules = 'nullable|' . $rules;
+        }
+        
+        return $rules;
     }
 }
